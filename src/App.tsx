@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useReducer, useState } from "react";
+
+import "./App.css";
+import Button from "./Button";
 
 function App() {
+  const [swapival, setswapival] = useState("Click Me");
+
+  const GetSWAPI = async () => {
+    try {
+      const responseFetch = await fetch(`https://swapi.dev/api/people/?page=1`);
+      if (responseFetch.ok) {
+        const json = await responseFetch.json(); //as {data: string[];
+        setswapival(json.results[0].name);
+      }
+    } catch (err) {
+      console.log("error");
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1> SWAPI React Calls</h1>
       </header>
+
+      <Button onClick={GetSWAPI}> {swapival} </Button>
     </div>
   );
 }
-
 export default App;
