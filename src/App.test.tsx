@@ -7,9 +7,3 @@ test("renders SWAPI React Calls header", () => {
   const headingElement = screen.getByText(/SWAPI React Calls/i);
   expect(headingElement).toBeInTheDocument();
 });
-
-test("Fetch SW Characters", () => {
-  render(<App />);
-  const headingElement = screen.getByText(/Load API/i);
-  expect(headingElement).toBeInTheDocument();
-});
