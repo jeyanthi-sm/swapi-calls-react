@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
-interface LoadSwapiCharactersInterface {
-  name: string;
+import { e } from "msw/lib/glossary-de6278a9";
+import * as React from "react";
+import { useState, useEffect, MouseEventHandler } from "react";
+
+export interface LoadSwapiCharactersProps {
+  onClick?: any; // (e: React.MouseEvent<HTMLButtonElement> | undefined) => void;
 }
 //function LoadSwapiCharacters(): React.FC {
 //const LoadSwapiCharacters = (inprops: LoadSwapiCharactersInterface) => {
-const LoadSwapiCharacters: React.FC = () => {
+const LoadSwapiCharacters: React.FC = (
+  inputLoadSwapiCharacterProps: LoadSwapiCharactersProps
+) => {
   const [swapiLoadStatus, setSwapiLoadStatus] = useState("Load API");
   const [swapiGetcharacters, setSwapiGetCharacters] = useState([]);
 

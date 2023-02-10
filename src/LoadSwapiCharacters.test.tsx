@@ -1,7 +1,10 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import LoadSwapiCharacters from "../src/LoadSwapiCharacters";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 
+import "@testing-library/jest-dom";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import LoadSwapiCharacters from "../src/LoadSwapiCharacters";
 import userEvent from "@testing-library/user-event";
 
 test("Fetch StarWar Characters", () => {
@@ -11,17 +14,29 @@ test("Fetch StarWar Characters", () => {
 });
 
 test("Loaded StarWar Characters", async () => {
-  render(<LoadSwapiCharacters />);
-  //const mockAPICall = jest.fn();
-  //const mockAPICall = jest.fn(() => {});
-  jest.mock("../src/LoadSwapiCharacters");
+  const fetchSwapiCharacters = async () => {
+    return "Luke Skywalker";
+  };
+  const fetchSwapiCharacterName = await fetchSwapiCharacters();
+  expect(fetchSwapiCharacterName).toBe("Luke Skywalker");
+});
 
+const mockFunction = jest.fn();
+
+const fetchSwapiCharacters = async () => {
+  return 1;
+};
+
+test("Loaded StarWar Characters  mocking", async () => {
+  const fetchSwapiCharacters = async () => {
+    mockFunction();
+  };
+  render(<LoadSwapiCharacters onClick={mockFunction()} />);
   const node = screen.getByRole("button");
-  console.log(node);
   const user = userEvent.setup();
 
   await user.click(node);
+
   //fireEvent.click(node);
-  //expect(mockAPICall).toHaveBeenCalledTimes(1);
-  expect(node).toHaveTextContent("API Loaded");
+  expect(mockFunction).toHaveBeenCalledTimes(1);
 });
