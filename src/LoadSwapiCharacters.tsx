@@ -7,7 +7,7 @@ export interface LoadSwapiCharactersProps {
 }
 //function LoadSwapiCharacters(): React.FC {
 //const LoadSwapiCharacters = (inprops: LoadSwapiCharactersInterface) => {
-const LoadSwapiCharacters: React.FC = (
+const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
   inputLoadSwapiCharacterProps: LoadSwapiCharactersProps
 ) => {
   const [swapiLoadStatus, setSwapiLoadStatus] = useState("Load API");
