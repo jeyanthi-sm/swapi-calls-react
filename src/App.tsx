@@ -1,32 +1,41 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import Button from "./Button";
-//import { AxiosCall } from "./AxiosCall";
-import axios from "axios";
 function App() {
-  const [swapival, setswapival] = useState("Load API ");
+  const [swapival, setSwapival] = useState("Load API ");
 
   const [characters, setCharacters] = useState([]);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchCharacters = async () => {
-      const response = await axios.get(`https://swapi.dev/api/people/?page=1`);
-      if (response.status === 200) {
-        setCharacters(response.data.results);
-        setswapival("Loaded");
-      } else setError("Something Went wrong");
+      try {
+        const response = await fetch(`https://swapi.dev/api/people/?page=1`);
+
+        const json = await response.json();
+        setCharacters(json.results);
+        setSwapival("Loaded");
+        console.log("hurray");
+      } catch (error) {
+        /* {
+      if (error.response)
+        console.log("REquest made but the server responded with an error");
+      else if (error.request)
+        console.log("REquest made but no response is received from the server");
+      else console.log("error occured while setting up the request");
+    } */
+        console.log("error");
+      }
     };
     fetchCharacters();
-  }, []);
+  }, [characters]);
+
   return (
     <div className="App">
       <header className="App-header">
         <h1> SWAPI React Calls </h1>
       </header>
-      <body>
+      <>
         <h2> {swapival} </h2>
-        {error && <div> {error} </div>}
+
         {characters ? (
           <ul>
             {characters &&
@@ -37,7 +46,7 @@ function App() {
         ) : (
           <p> no characters found </p>
         )}
-      </body>
+      </>
     </div>
   );
 }
