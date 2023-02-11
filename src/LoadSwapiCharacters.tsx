@@ -5,8 +5,6 @@ import { useState, useEffect, MouseEventHandler } from "react";
 export interface LoadSwapiCharactersProps {
   onClick?: any; // (e: React.MouseEvent<HTMLButtonElement> | undefined) => void;
 }
-//function LoadSwapiCharacters(): React.FC {
-//const LoadSwapiCharacters = (inprops: LoadSwapiCharactersInterface) => {
 const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
   inputLoadSwapiCharacterProps: LoadSwapiCharactersProps
 ) => {
