@@ -1,7 +1,7 @@
 import React from "react";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-
+import server from "./mocks/server";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import LoadSwapiCharacters from "../src/LoadSwapiCharacters";
@@ -24,11 +24,7 @@ test("Loaded StarWar Characters", async () => {
 const mockFunction = jest.fn();
 
 test("Loaded StarWar Characters  mocking", async () => {
-  const fetchSwapiCharacters = async () => {
-    mockFunction();
-  };
-  //render(<LoadSwapiCharacters onClick={mockFunction()} />);  //working fine uncomment if needed
-  render(<LoadSwapiCharacters onClick={fetchSwapiCharacters()} />);
+  render(<LoadSwapiCharacters onClick={mockFunction()} />); //working fine uncomment if needed
 
   const node = screen.getByRole("button");
   const user = userEvent.setup();
@@ -37,24 +33,74 @@ test("Loaded StarWar Characters  mocking", async () => {
   expect(mockFunction).toHaveBeenCalledTimes(1);
 });
 
-const server = setupServer(
-  rest.get(`https://swapi.dev/api/people/`, (req, res, ctx) => {
-    return res(ctx.json({ name: "Luke Skywalker" }));
-  })
-);
+//Mock Server API
+test("loads and displays greeting", async () => {
+  const greetingMsg = {
+    results: [
+      {
+        name: "Hello there!",
+      },
+    ],
+  };
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+  render(<LoadSwapiCharacters />);
+  const node = screen.getByRole("button");
+  const user = userEvent.setup();
 
-test("loads and displays Luke SkyWalker", async () => {
-  //const fetchSwapiCharacters = async () => {};
-  //  render(<LoadSwapiCharacters onClick={fetchSwapiCharacters()} />);
+  server.use(
+    rest.get(`/greeting`, (req, res, ctx) => {
+      return res(ctx.status(200), ctx.json({}));
+    })
+  );
+
+  await user.click(node);
+  await screen.findByText(/API Loaded/i);
+  expect(screen.getByText(greetingMsg.results[0].name)).toBeInTheDocument();
+});
+
+const notFoundDetail = {
+  detail: "Not found",
+};
+
+test("loads and displays Error Not found", async () => {
   render(<LoadSwapiCharacters />);
 
   const node = screen.getByRole("button");
   const user = userEvent.setup();
+  server.use(
+    rest.get(`/error`, (req, res, ctx) => {
+      return res(ctx.status(404));
+    })
+  );
+
   await user.click(node);
-  await screen.findByText(/no characters found/i);
-  expect(screen.getByText("no characters found")).toBeInTheDocument();
+  await screen.findByText(/API Loaded/i);
+  expect(screen.getByText(notFoundDetail.detail)).toBeInTheDocument();
+});
+
+const json1 = {
+  count: 82,
+  next: "https://swapi.dev/api/people/?page=2",
+  previous: null,
+  results: [
+    {
+      name: "Mock Character1",
+    },
+  ],
+};
+test("loads and displays the first Mock character", async () => {
+  render(<LoadSwapiCharacters />);
+
+  const node = screen.getByRole("button");
+  const user = userEvent.setup();
+
+  server.use(
+    rest.get(`https://swapi.dev/api/people/`, (req, res, ctx) => {
+      return res(ctx.status(200), ctx.json(json1));
+    })
+  );
+
+  await user.click(node);
+  await screen.findByText(/API Loaded/i);
+  expect(screen.getByText(json1.results[0].name)).toBeInTheDocument();
 });
