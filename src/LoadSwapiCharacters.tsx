@@ -13,7 +13,7 @@ const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
 
   const fetchSwapiCharacters = async () => {
     try {
-      const response = await fetch(`https://swapi.dev/api/people/?page=1`);
+      const response = await fetch(`https://swapi.dev/api/people/`);
 
       const json = await response.json();
       setSwapiGetCharacters(json.results);

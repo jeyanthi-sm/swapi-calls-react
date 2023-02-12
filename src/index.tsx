@@ -3,11 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { worker } from "./mswWorker";
+import { mswWorker } from "./mocks/browser";
+
+//async function main() {
 // Start the mocking conditionally.
 if (process.env.NODE_ENV === "development") {
-  const { worker } = require("./mocks/browser");
-  worker.start();
+  const { mswWorker } = require("./mocks/browser");
+  mswWorker.start();
+
+  /*await mswWorker.start({
+      serviceWorker: {
+        url: "//mocks/browsers.ts",
+      },
+    });*/
 }
 
 const root = ReactDOM.createRoot(
@@ -23,3 +31,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+//}
+//main();
