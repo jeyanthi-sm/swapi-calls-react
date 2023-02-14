@@ -5,7 +5,7 @@ function App() {
   const [swapiLoadStatus, setSwapiLoadStatus] = useState("Load API ");
 
   const [swapiGetcharacters, setSwapiGetCharacters] = useState([]);
-
+  const SWAPIURL = `https://swapi.dev/api/people/`;
   /*  useEffect(() => {
     const fetchSwapiCharacters = async () => {
       try {
@@ -28,7 +28,7 @@ function App() {
         <h1> SWAPI React Calls </h1>
       </header>
 
-      <LoadSwapiCharacters />
+      <LoadSwapiCharacters url={SWAPIURL} />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import * as React from "react";
 import { useState, useEffect, MouseEventHandler } from "react";
 
 export interface LoadSwapiCharactersProps {
+  url: string;
   onClick?: any; // (e: React.MouseEvent<HTMLButtonElement> | undefined) => void;
 }
 const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
@@ -10,16 +11,17 @@ const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
 ) => {
   const [swapiLoadStatus, setSwapiLoadStatus] = useState("Load API");
   const [swapiGetcharacters, setSwapiGetCharacters] = useState([]);
+  const [swapiError, setSwapiError] = useState<string>();
 
   const fetchSwapiCharacters = async () => {
     try {
-      const response = await fetch(`https://swapi.dev/api/people/`);
-
+      // const response = await fetch(`https://swapi.dev/api/people/`);
+      const response = await fetch(inputLoadSwapiCharacterProps.url);
       const json = await response.json();
       setSwapiGetCharacters(json.results);
       setSwapiLoadStatus("API Loaded");
     } catch (error) {
-      console.log("error");
+      setSwapiError("error");
     }
   };
 

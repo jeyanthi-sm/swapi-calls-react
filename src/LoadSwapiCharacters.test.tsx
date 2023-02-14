@@ -7,8 +7,9 @@ import { render, screen } from "@testing-library/react";
 import LoadSwapiCharacters from "../src/LoadSwapiCharacters";
 import userEvent from "@testing-library/user-event";
 
+const SWAPIURL = "https://swapi.dev/api/people/";
 test("Load StarWar Characters", () => {
-  render(<LoadSwapiCharacters />);
+  render(<LoadSwapiCharacters url={SWAPIURL} />);
   const headingElement = screen.getByText(/Load API/i);
   expect(headingElement).toBeInTheDocument();
 });
@@ -24,7 +25,7 @@ test("Loaded StarWar Characters", async () => {
 const mockFunction = jest.fn();
 
 test("Loaded StarWar Characters  mocking", async () => {
-  render(<LoadSwapiCharacters onClick={mockFunction()} />); //working fine uncomment if needed
+  render(<LoadSwapiCharacters url={SWAPIURL} onClick={mockFunction()} />); //working fine uncomment if needed
 
   const node = screen.getByRole("button");
   const user = userEvent.setup();
@@ -38,20 +39,20 @@ test("loads and displays greeting", async () => {
   const greetingMsg = {
     results: [
       {
-        name: "Hello there!",
+        name: "Hello There!",
       },
     ],
   };
-
-  render(<LoadSwapiCharacters />);
-  const node = screen.getByRole("button");
-  const user = userEvent.setup();
-
+  const GREETINGURL = "/greeting";
   server.use(
     rest.get(`/greeting`, (req, res, ctx) => {
-      return res(ctx.status(200), ctx.json({}));
+      return res(ctx.status(200), ctx.json({ greetingMsg }));
     })
   );
+
+  render(<LoadSwapiCharacters url={GREETINGURL} />);
+  const node = screen.getByRole("button");
+  const user = userEvent.setup();
 
   await user.click(node);
   await screen.findByText(/API Loaded/i);
@@ -59,22 +60,33 @@ test("loads and displays greeting", async () => {
 });
 
 const notFoundDetail = {
-  detail: "Not found",
+  detail: "no characters found",
 };
 
+const GREETINGURL = "/greeting";
 test("loads and displays Error Not found", async () => {
-  render(<LoadSwapiCharacters />);
+  server.use(
+    rest.get(`/greeting`, (req, res, ctx) => {
+      return res(ctx.status(200), ctx.json({}));
+    })
+  );
 
-  const node = screen.getByRole("button");
-  const user = userEvent.setup();
+  /*
+const ERRORURL = "/error";
   server.use(
     rest.get(`/error`, (req, res, ctx) => {
       return res(ctx.status(404));
     })
-  );
+  ); */
+  render(<LoadSwapiCharacters url={GREETINGURL} />);
+
+  const node = screen.getByRole("button");
+  const user = userEvent.setup();
 
   await user.click(node);
   await screen.findByText(/API Loaded/i);
+
+  //expect(screen.getByText(greetingMsg.results[0].name)).toBeInTheDocument();
   expect(screen.getByText(notFoundDetail.detail)).toBeInTheDocument();
 });
 
@@ -89,7 +101,7 @@ const json1 = {
   ],
 };
 test("loads and displays the first Mock character", async () => {
-  render(<LoadSwapiCharacters />);
+  render(<LoadSwapiCharacters url={SWAPIURL} />);
 
   const node = screen.getByRole("button");
   const user = userEvent.setup();
