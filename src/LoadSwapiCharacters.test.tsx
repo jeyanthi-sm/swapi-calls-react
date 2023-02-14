@@ -75,15 +75,15 @@ const notFoundDetail = {
   ],
 };
 
-const GREETINGURL = "/greeting";
+const NOTFOUNDURL = "/error";
 test("loads and displays Error Not found", async () => {
   server.use(
-    rest.get(`/greeting`, (req, res, ctx) => {
+    rest.get(`/error`, (req, res, ctx) => {
       return res(ctx.status(500), ctx.json(notFoundDetail));
     })
   );
 
-  render(<LoadSwapiCharacters url={GREETINGURL} />);
+  render(<LoadSwapiCharacters url={NOTFOUNDURL} />);
 
   const node = screen.getByRole("button");
   const user = userEvent.setup();
