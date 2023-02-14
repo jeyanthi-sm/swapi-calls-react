@@ -21,7 +21,7 @@ const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
       setSwapiGetCharacters(json.results);
       setSwapiLoadStatus("API Loaded");
     } catch (error) {
-      setSwapiError("error");
+      if (typeof error === "string") setSwapiError(error);
     }
   };
 
@@ -38,7 +38,7 @@ const LoadSwapiCharacters: React.FC<LoadSwapiCharactersProps> = (
             })}
         </ul>
       ) : (
-        <p> no characters found </p>
+        <p> {swapiError} </p>
       )}
     </>
   );

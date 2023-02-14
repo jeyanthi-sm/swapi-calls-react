@@ -34,19 +34,24 @@ test("Loaded StarWar Characters  mocking", async () => {
   expect(mockFunction).toHaveBeenCalledTimes(1);
 });
 
+const greetingMsg = {
+  count: 1,
+  next: "eirieriere",
+  previous: null,
+  results: [
+    {
+      name: "Hello There!",
+    },
+  ],
+};
+
 //Mock Server API
 test("loads and displays greeting", async () => {
-  const greetingMsg = {
-    results: [
-      {
-        name: "Hello There!",
-      },
-    ],
-  };
   const GREETINGURL = "/greeting";
   server.use(
     rest.get(`/greeting`, (req, res, ctx) => {
-      return res(ctx.status(200), ctx.json({ greetingMsg }));
+      //return res(ctx.status(200), ctx.json({ name: "Hello Greeting" }));
+      return res(ctx.json(greetingMsg));
     })
   );
 
@@ -60,24 +65,24 @@ test("loads and displays greeting", async () => {
 });
 
 const notFoundDetail = {
-  detail: "no characters found",
+  count: 0,
+  next: "ererere",
+  previous: null,
+  results: [
+    {
+      name: "Not Found",
+    },
+  ],
 };
 
 const GREETINGURL = "/greeting";
 test("loads and displays Error Not found", async () => {
   server.use(
     rest.get(`/greeting`, (req, res, ctx) => {
-      return res(ctx.status(200), ctx.json({}));
+      return res(ctx.status(500), ctx.json(notFoundDetail));
     })
   );
 
-  /*
-const ERRORURL = "/error";
-  server.use(
-    rest.get(`/error`, (req, res, ctx) => {
-      return res(ctx.status(404));
-    })
-  ); */
   render(<LoadSwapiCharacters url={GREETINGURL} />);
 
   const node = screen.getByRole("button");
@@ -86,8 +91,7 @@ const ERRORURL = "/error";
   await user.click(node);
   await screen.findByText(/API Loaded/i);
 
-  //expect(screen.getByText(greetingMsg.results[0].name)).toBeInTheDocument();
-  expect(screen.getByText(notFoundDetail.detail)).toBeInTheDocument();
+  expect(screen.getByText(notFoundDetail.results[0].name)).toBeInTheDocument();
 });
 
 const json1 = {
